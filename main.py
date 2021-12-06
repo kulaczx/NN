@@ -1,4 +1,7 @@
-#iimport here
+# import here
+import time
+from nearestN import NearestNeighbor
+
 
 def menu():
     file_name = ''
