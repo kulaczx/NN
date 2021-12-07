@@ -1,9 +1,4 @@
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sb
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
 
 
 def distance(x, y, p=2):
@@ -22,6 +17,10 @@ class NearestNeighbor:
         self.data_list = []
         self.data_label = []
 
+    def print_data(self):
+        for i in range(len(self.data_list)):
+            print("Label: ", self.data_label[i], " data: ", self.data_list[i])
+
     def read_data(self, file_name):
         file = open(file_name, 'r')
         data_row = []
@@ -29,12 +28,14 @@ class NearestNeighbor:
             count = 0
             data_row.clear()
             for x in row.split(' '):
-                if x.isdigit() and count != 0:
+                if x != ' ' and x != '' and count != 0:
                     data_row.append(float(x))
-                if x.isdigit() and count == 0:
+                    count += 1
+                if x != ' ' and x != '' and count == 0:
                     self.data_label.append(float(x))
-                count += 1
-            self.data_list.append(np.array(data_row))
+                    count += 1
+            if len(data_row) > 0:
+                self.data_list.append(np.array(data_row))
 
     def KNN(self, test_data, K=1):
         distance_list = list()

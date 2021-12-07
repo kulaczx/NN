@@ -21,3 +21,7 @@ def menu():
     if alg_num == 2:
         # run backward
         print("run backward")
+
+nn = NearestNeighbor()
+nn.read_data("Ver_2_CS170_Fall_2021_Small_data__43.txt")
+nn.print_data()
