@@ -103,6 +103,7 @@ class NearestNeighbor:
         test_label = []
         acc_list = []
         test_data = []
+        overall_acc = []
         while len(init_feature) > 0:
             test_label.clear()
             acc_list.clear()
@@ -114,13 +115,14 @@ class NearestNeighbor:
                     for j in range(len(self.data_list)):
                         test_data.clear()
                         test_data.append(self.data_list[j][i])
-                        test_label.append(self.KNN(test_data, feature, K=5))
+                        test_label.append(self.KNN(test_data, feature, K=6))
                     acc = (i, self.accuracy(test_label))
                     print(" Accuracy: ", acc[1])
+                    print()
                     acc_list.append(acc)
+                    overall_acc.append((feature, acc[1]))
                 acc_list.sort(reverse=True, key=lambda pair: pair[1])
             else:
-                print("best feature not empty")
                 feature = []
                 for i in init_feature:
                     feature.clear()
@@ -133,19 +135,21 @@ class NearestNeighbor:
                         test_data = self.make_test_data(best_feature, j)
                         test_data.append(self.data_list[j][i])
                         #print(test_data)
-                        test_label.append(self.KNN(test_data, feature, K=5))
+                        test_label.append(self.KNN(test_data, feature, K=6))
                     acc = (i, self.accuracy(test_label))
                     print(" Accuracy: ", acc[1])
+                    print()
                     acc_list.append(acc)
+                    overall = (list(feature), acc[1])
+                    overall_acc.append(overall)
                 acc_list.sort(reverse=True, key=lambda pair: pair[1])
 
             best_feature.append(acc_list[0][0])
             init_feature.remove(acc_list[0][0])
             if (1 - acc_list[0][1]) < sLevel:
-                print(1 - acc_list[0][1], "less than sLevel")
                 break
 
-        return best_feature
+        return best_feature, overall_acc
 
     def backward_elimination(self, sLevel=0.05):
         feature_number = len(self.data_list[0])
@@ -156,6 +160,7 @@ class NearestNeighbor:
         acc_list = []
         test_data = []
         next_feature = []
+        overall_acc = []
         for i in self.data_list:
             test_label.append(self.KNN(i, feature, K=5))
         acc_all = self.accuracy(test_label)
@@ -171,17 +176,17 @@ class NearestNeighbor:
                 for j in range(len(self.data_list)):
                     test_data.clear()
                     test_data = self.make_test_data(next_feature, j)
-                    test_label.append(self.KNN(test_data, next_feature, K=5))
+                    test_label.append(self.KNN(test_data, next_feature, K=3))
                 acc = (i, self.accuracy(test_label))
-                print("acc: ", acc)
                 print(" Accuracy: ", acc[1])
+                print()
                 acc_list.append(acc)
+                overall_acc.append((list(next_feature), acc[1]))
             acc_list.sort(reverse=True, key=lambda pair: pair[1])
             print("remaining feature: ", feature)
             print("remove: ", acc_list[0][0])
             feature.remove(acc_list[0][0])
             if (1 - acc_list[0][1]) < sLevel:
-                print(1 - acc_list[0][1], "less than sLevel")
                 break
 
-        return feature
+        return feature, overall_acc
